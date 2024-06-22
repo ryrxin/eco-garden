@@ -210,3 +210,20 @@ module.exports.deleteUserById = (req, res, next) => {
 
     model.deleteById(data, callback);
 };
+
+module.exports.addPoints = (req, res, next) => {
+    const data = {
+        user_id: req.params.id,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error addCoins:", error);
+            res.status(500).json(error);
+        } else {
+            return res.status(204).json();
+        }
+    };
+
+    model.addPoints(data, callback);
+};

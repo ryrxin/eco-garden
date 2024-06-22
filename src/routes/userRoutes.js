@@ -10,5 +10,6 @@ router.post("/register", userController.checkUsernameOrEmailExist, bcryptMiddlew
 router.post("/login", userController.login, bcryptMiddleware.comparePassword, jwtMiddleware.generateToken, jwtMiddleware.sendToken);
 router.put("/:id", jwtMiddleware.verifyToken, userController.checkUsernameOrEmailExist, userController.updateUserById);
 router.get("/:id", userController.readUserById);
+router.put("/points/:id", userController.addPoints);
 
 module.exports = router;

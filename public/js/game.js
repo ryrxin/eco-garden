@@ -1,3 +1,5 @@
+const user_id = localStorage.getItem("user_id");
+
 document.getElementById('send-btn').addEventListener('click', async () => {
     const userInput = document.getElementById('user-input').value;
     if (userInput) {
@@ -5,7 +7,14 @@ document.getElementById('send-btn').addEventListener('click', async () => {
         document.getElementById('user-input').value = '';
         const prompt = document.getElementById('current-prompt').textContent;
         const evaluation = await evaluateAnswer(userInput, prompt);
-        appendMessage('Score', `Your answer scored: ${evaluation.score}`);
+        appendMessage('Score', `${evaluation.score}`);
+
+        const callback = (responseStatus, responseData) => {
+            console.log("responseStatus:", responseStatus);
+            console.log("responseData:", responseData);
+        }
+
+        fetchMethod(currentUrl + `/api/users/points/${user_id}`, callback, "PUT");
     }
 });
 

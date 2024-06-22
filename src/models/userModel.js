@@ -96,3 +96,14 @@ module.exports.deleteById = (data, callback) => {
 
     db.query(SQLSTATMENT, VALUES, callback);
 };
+
+module.exports.addPoints = (data, callback) => {
+    const SQLSTATMENT = `
+    UPDATE user
+    SET points = points + ?
+    WHERE user_id = ?
+    `;
+
+    const VALUES = [data.points, data.user_id];
+    db.query(SQLSTATMENT, VALUES, callback);
+};
