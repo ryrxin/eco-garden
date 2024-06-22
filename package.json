@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "init_tables": "node src/configurations/initTables.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init_tables": "node src/configurations/createSchema.js && node src/configurations/initTables.js",
     "dev": "nodemon index.js"
   },
   "repository": {
@@ -20,11 +20,13 @@
   },
   "homepage": "https://github.com/ryrxin/eco-garden#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.13.0",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "d": "^1.0.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "googleapis": "^140.0.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.10.1",
     "nodemon": "^3.1.4",
