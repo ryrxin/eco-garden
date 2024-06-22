@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const gameController = require('../controllers/gameController');
+const gameController = require("../controllers/gameController");
 
-router.get('/prompts', gameController.getPrompt);
-router.post('/evaluate', gameController.evaluateAnswer);
+router.get("/prompts", gameController.getPrompt);
+router.post("/evaluate", gameController.evaluateAnswer);
 
 module.exports = router;

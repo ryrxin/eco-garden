@@ -2,7 +2,7 @@ const pool = require("../services/db");
 
 const database = pool.config.connectionConfig.database;
 
-pool.config.connectionConfig.database = null; 
+pool.config.connectionConfig.database = null;
 
 const CHECK_DB_SQL = `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${database}'`;
 const CREATE_DB_SQL = `CREATE DATABASE IF NOT EXISTS ${database}`;
