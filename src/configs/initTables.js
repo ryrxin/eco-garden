@@ -20,6 +20,8 @@ bcrypt.hash("1234", saltRounds, (error, hash) => {
 
         const SQLSTATEMENT = `
         DROP TABLE IF EXISTS user;
+
+        DROP TABLE IF EXISTS posts;
     
         CREATE TABLE user (
             user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -29,8 +31,19 @@ bcrypt.hash("1234", saltRounds, (error, hash) => {
             points INT
         );
 
-        INSERT INTO user (username, email, password) VALUES
+        CREATE TABLE posts (
+            post_id INT PRIMARY KEY AUTO_INCREMENT,
+            user_id INT NOT NULL,
+            text TEXT NOT NULL,
+            created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        INSERT INTO user (username, email, password, points) VALUES
         ('admin', 'a@a.com', '${hash}');
+
+        INSERT INTO posts (post_id, user_id, text) VALUES
+        (1, 1, 'Hello!'),
+        (2, 1, 'Recycle')
         `;
 
         pool.query(SQLSTATEMENT, callback);
