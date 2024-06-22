@@ -43,17 +43,23 @@ eco-garden/
 │   ├── css/
 │   │   └── styles.css
 │   ├── js/
+│   │   ├── createPost.js
+│   │   ├── editProfile.js
 │   │   ├── game.js
 │   │   ├── getCurrentURL.js
+│   │   ├── getPosts.js
 │   │   ├── getSingleUserInfo.js
 │   │   ├── leaderboards.js
 │   │   ├── loginUser.js
 │   │   ├── queryCmds.js
 │   │   ├── registerUser.js
 │   │   └── userNavbar.js
+│   ├── createpost.html
+│   ├── editprofile.html
 │   ├── game.html
 │   ├── index.html
 │   ├── login.html
+│   ├── posts.html
 │   ├── profile.html
 │   └── register.html
 ├── src/
@@ -64,13 +70,16 @@ eco-garden/
 │   │   ├── bcrypt.js
 │   │   ├── gameController.js
 │   │   ├── jwt.js
+│   │   ├── postController.js
 │   │   └── userController.js
 │   ├── models/
 │   │   ├── gameModel.js
+│   │   ├── postModel.js
 │   │   └── userModel.js
 │   ├── routes/
 │   │   ├── gameRoutes.js
 │   │   ├── mainRoutes.js
+│   │   ├── postRoutes.js
 │   │   └── userRoutes.js
 │   └── services/
 │       ├── db.js
@@ -82,10 +91,10 @@ eco-garden/
 ├── package-lock.json
 ├── package.json
 └── README.md
-
 ```
 
 ## Project Structure
+
 
 ### Root Directory
 - **node_modules/**: Contains all npm packages required for the project.
@@ -99,18 +108,24 @@ eco-garden/
   - **styles.css**: Main stylesheet for the application.
 
 - **js/**
+  - **createPost.js**: Script to handle creating posts.
+  - **editProfile.js**: Script to handle editing user profiles.
   - **game.js**: JavaScript logic for the sustainability minigame.
   - **getCurrentURL.js**: Utility script to get the current URL.
-  - **getSingleUserInfo.js**: Script to fetch and display user's information
+  - **getPosts.js**: Script to fetch and display posts.
+  - **getSingleUserInfo.js**: Script to fetch and display a single user's information.
   - **leaderboards.js**: Script to handle leaderboard functionalities.
   - **loginUser.js**: Script to handle user login.
   - **queryCmds.js**: Utility script for querying commands.
   - **registerUser.js**: Script to handle user registration.
-  - **userNavbar.js**: Script to handle navigation bar functionalities.
+  - **userNavbar.js**: Script to handle user-specific navigation bar functionalities.
 
+- **createpost.html**: HTML file for the create post page.
+- **editprofile.html**: HTML file for the edit profile page.
 - **game.html**: HTML file for the game page.
 - **index.html**: HTML file for the homepage.
 - **login.html**: HTML file for the login page.
+- **posts.html**: HTML file for the posts page.
 - **profile.html**: HTML file for the user profile page.
 - **register.html**: HTML file for the registration page.
 
@@ -123,20 +138,23 @@ eco-garden/
   - **bcrypt.js**: Script for handling password encryption using bcrypt.
   - **gameController.js**: Controller for game-related operations.
   - **jwt.js**: Script for handling JWT authentication.
+  - **postController.js**: Controller for post-related operations.
   - **userController.js**: Controller for user-related operations.
 
 - **models/**
   - **gameModel.js**: Model defining the structure of the game-related data.
+  - **postModel.js**: Model defining the structure of the post-related data.
   - **userModel.js**: Model defining the structure of the user-related data.
 
 - **routes/**
   - **gameRoutes.js**: Routes for game-related endpoints.
   - **mainRoutes.js**: Main application routes.
+  - **postRoutes.js**: Routes for post-related endpoints.
   - **userRoutes.js**: Routes for user-related endpoints.
 
 - **services/**
   - **db.js**: Database connection setup and configurations.
-  - **gemini.js**: Google Gemini configuration
+  - **gemini.js**: Google Gemini API configuration.
   - **app.js**: Main application setup and server initialization.
 
 #### Root Files
