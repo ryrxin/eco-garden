@@ -4,6 +4,7 @@ const db = require("../services/db");
 module.exports.selectAll = (callback) => {
     const SQLSTATMENT = `
     SELECT user_id, username, email, password, IFNULL(points, 0) AS points FROM user
+    ORDER BY points DESC;
     `;
 
     db.query(SQLSTATMENT, callback);
