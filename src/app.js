@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // SETUP ROUTES
 const mainRoutes = require("./routes/mainRoutes");
-app.use("/", mainRoutes);
+app.use("/api", mainRoutes);
 
 // SETUP STATIC FILES
 app.use("/", express.static("public"));

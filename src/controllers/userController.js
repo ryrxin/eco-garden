@@ -1,79 +1,212 @@
-const model = require("../model/userModel");
+const model = require("../models/userModel.js");
 
-// to select all users from the user table
-module.exports.readAllUsers = async (req, res, next) => {
-    try {
-        const results = await model.selectAll();
-        res.status(200).json(results);
-    } catch (error) {
-        console.error("Error readAllUsers:", error);
-        res.status(500).json(error);
+// GET /users
+module.exports.readAllUsers = (req, res, next) => {
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error readAllUser:", error);
+            res.status(500).json(error);
+        } else res.status(200).json(results);
+    };
+
+    model.selectAll(callback);
+};
+
+// login
+module.exports.login = (req, res, next) => {
+    if (req.body.username == undefined || req.body.password == undefined) {
+        res.status(404).json({
+            message: "Missing required data",
+        });
     }
-}
 
-// to select a user by user_id from the user table
-module.exports.readUserById = async (req, res, next) => {
-    const user_id = req.params.user_id;
+    const data = {
+        username: req.body.username,
+    };
 
-    try {
-        const result = await model.selectById(user_id);
-        if (!result) {
-            res.status(404).json({ message: "User not found" });
+    const callback = (error, results, fields) => {
+        if (error) {
+            res.status(500).json(error);
+        } else if (results.length == 0) {
+            res.status(404).json({
+                message: "User not found",
+            });
         } else {
-            res.status(200).json(result);
+            res.locals.hash = results[0].password;
+            res.locals.userId = results[0].user_id;
+            next();
         }
-    } catch (error) {
-        console.error("Error readUserById:", error);
-        res.status(500).json(error);
+    };
+
+    model.selectByUsername(data, callback);
+};
+
+// register
+module.exports.register = (req, res, next) => {
+    if (req.body.username == undefined || req.body.email == undefined || req.body.password == undefined) {
+        res.status(404).json({
+            message: "Missing required data",
+        });
     }
-}
 
-// Register a new user
-module.exports.register = async (req, res, next) => {
-    const { username, email, password } = req.body;
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+        hashPassword: res.locals.hash,
+    };
 
-    try {
-        const hashPassword = await bcrypt.hash(password, 10);
-        const result = await model.register(username, email, hashPassword);
-        res.status(201).json(result);
-    } catch (error) {
-        res.status(500).json(error);
-    }
-}
-
-// Login a user
-module.exports.login = async (req, res, next) => {
-    const { username, password } = req.body;
-
-    try {
-        const user = await model.login(username);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
-
-        res.status(200).json({ message: "Login successful" });
-    } catch (error) {
-        res.status(500).json(error);
-    }
-}
-
-// to delete a user by user_id from the user table
-module.exports.deleteUserById = async (req, res, next) => {
-    const user_id = req.params.user_id;
-
-    try {
-        const result = await model.deleteById(user_id);
-        if (!result) {
-            res.status(404).json({ message: "User not found" });
+    const callback = (error, results, fields) => {
+        if (error) {
+            res.status(500).json(error);
         } else {
-            res.status(200).json({ message: "User deleted successfully" });
+            res.locals.user_id = results.insertId;
+            next();
         }
-    } catch (error) {
-        res.status(500).json(error);
+    };
+    model.register(data, callback);
+};
+
+// middleware: check if username or email exists
+module.exports.checkUsernameOrEmailExist = (req, res, next) => {
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            res.status(500).json(error);
+        } else if (results[0].length > 0 || results[1].length > 0) {
+            res.status(409).json({
+                message: "Username or email already exists",
+            });
+        } else {
+            next();
+        }
+    };
+    model.checkUsernameOrEmailExist(data, callback);
+};
+
+// POST /users
+module.exports.createNewUser = (req, res, next) => {
+    if (req.body.username == undefined) {
+        res.status(400).send("Error: username is undefined");
+        return;
     }
-}
+
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error createNewUser:", error);
+            res.status(500).json(error);
+        } else {
+            res.locals.user_id = results.insertId;
+            next();
+        }
+    };
+
+    model.insertSingle(data, callback);
+};
+
+// GET /users/{user_id}
+module.exports.readUserById = (req, res, next) => {
+    const data = {
+        id: req.params.id,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error readUserById:", error);
+            res.status(500).json(error);
+        } else {
+            if (results.length == 0) {
+                res.status(404).json({
+                    message: "User not found",
+                });
+            } else res.status(200).json(results[0]);
+        }
+    };
+
+    model.selectById(data, callback);
+};
+
+// GET api/users/profile
+module.exports.currentUser = (req, res, next) => {
+    const data = {
+        id: res.locals.userId,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error readUserById:", error);
+            res.status(500).json(error);
+        } else {
+            if (results.length == 0) {
+                res.status(404).json({
+                    message: "User not found",
+                });
+            } else res.status(200).json(results[0]);
+        }
+    };
+
+    model.selectById(data, callback);
+};
+
+// PUT /users/{user_id}
+module.exports.updateUserById = (req, res, next) => {
+    if (req.body.username == undefined || req.body.email == undefined || req.body.password == undefined) {
+        res.status(400).json({
+            message: "Error: username, email or password is undefined",
+        });
+        return;
+    }
+
+    const data = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        id: req.params.id,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error updateUserById:", error);
+            res.status(500).json(error);
+        } else {
+            if (results.affectedRows == 0) {
+                res.status(404).json({
+                    message: "User not found",
+                });
+            } else res.status(204).send(); // 204 No Content
+        }
+    };
+
+    model.updateById(data, callback);
+};
+
+// DELETE /users/{user_id}
+module.exports.deleteUserById = (req, res, next) => {
+    const data = {
+        id: req.params.id,
+    };
+
+    const callback = (error, results, fields) => {
+        if (error) {
+            console.error("Error deleteUserById:", error);
+            res.status(500).json(error);
+        } else {
+            if (results.affectedRows == 0) {
+                res.status(404).json({
+                    message: "User not found",
+                });
+            } else res.status(204).send(); // 204 No Content
+        }
+    };
+
+    model.deleteById(data, callback);
+};
