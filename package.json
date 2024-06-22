@@ -1,0 +1,19 @@
+{
+  "name": "eco-garden",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryrxin/eco-garden.git"
+  },
+  "author": "ryan, xiu qing, zixing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryrxin/eco-garden/issues"
+  },
+  "homepage": "https://github.com/ryrxin/eco-garden#readme"
+}
