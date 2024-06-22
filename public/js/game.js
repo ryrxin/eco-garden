@@ -22,14 +22,14 @@ function appendMessage(sender, message) {
 }
 
 async function fetchPrompt() {
-    const response = await fetch('/api/prompts');
+    const response = await fetch('/api/game/prompts');
     const data = await response.json();
     appendMessage('Prompt', data.prompt);
     document.getElementById('current-prompt').textContent = data.prompt;
 }
 
 async function evaluateAnswer(answer, prompt) {
-    const response = await fetch('/api/evaluate', {
+    const response = await fetch('/api/game/evaluate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
