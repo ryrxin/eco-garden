@@ -24,11 +24,11 @@ module.exports.selectByUsername = (data, callback) => {
 // register
 module.exports.register = (data, callback) => {
     const SQLSTATMENT = `
-    INSERT INTO user (username, email, password)
-    VALUES (?, ?, ?);
+    INSERT INTO user (username, email, password, points)
+    VALUES (?, ?, ?, 0);
     `;
 
-    const VALUES = [data.username, data.email, data.hashPassword, data.username];
+    const VALUES = [data.username, data.email, data.hashPassword];
 
     db.query(SQLSTATMENT, VALUES, callback);
 };
@@ -47,7 +47,6 @@ module.exports.checkUsernameOrEmailExist = (data, callback) => {
 
     db.query(SQLSTATMENT, VALUES, callback);
 };
-
 
 // POST /users
 module.exports.createNew = (data, callback) => {
@@ -105,5 +104,6 @@ module.exports.addPoints = (data, callback) => {
     `;
 
     const VALUES = [data.points, data.user_id];
+
     db.query(SQLSTATMENT, VALUES, callback);
 };

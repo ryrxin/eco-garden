@@ -214,11 +214,12 @@ module.exports.deleteUserById = (req, res, next) => {
 module.exports.addPoints = (req, res, next) => {
     const data = {
         user_id: req.params.id,
+        points: req.params.points,
     };
 
     const callback = (error, results, fields) => {
         if (error) {
-            console.error("Error addCoins:", error);
+            console.error("Error addPoints:", error);
             res.status(500).json(error);
         } else {
             return res.status(204).json();
