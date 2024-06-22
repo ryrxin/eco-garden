@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/ryrxin/eco-garden/issues"
   },
-  "homepage": "https://github.com/ryrxin/eco-garden#readme"
+  "homepage": "https://github.com/ryrxin/eco-garden#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.10.1",
+    "nodemon": "^3.1.4",
+    "openai": "^4.52.0"
+  }
 }
