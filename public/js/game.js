@@ -4,9 +4,13 @@ document.getElementById('send-btn').addEventListener('click', async () => {
         appendMessage('User', userInput);
         document.getElementById('user-input').value = '';
         const prompt = document.getElementById('current-prompt').textContent;
-        const score = await evaluateAnswer(userInput, prompt);
-        appendMessage('Score', `Your answer scored: ${score}`);
+        const evaluation = await evaluateAnswer(userInput, prompt);
+        appendMessage('Score', `Your answer scored: ${evaluation.score}`);
     }
+});
+
+document.getElementById('regenerate-btn').addEventListener('click', async () => {
+    await fetchPrompt();
 });
 
 function appendMessage(sender, message) {
@@ -33,7 +37,7 @@ async function evaluateAnswer(answer, prompt) {
         body: JSON.stringify({ answer, prompt })
     });
     const data = await response.json();
-    return data.score;
+    return data;
 }
 
 document.addEventListener('DOMContentLoaded', fetchPrompt);
