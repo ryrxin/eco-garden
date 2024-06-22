@@ -25,7 +25,8 @@ bcrypt.hash("1234", saltRounds, (error, hash) => {
             user_id INT PRIMARY KEY AUTO_INCREMENT,
             username TEXT NOT NULL,
             email TEXT NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            points INT
         );
 
         INSERT INTO user (username, email, password) VALUES
