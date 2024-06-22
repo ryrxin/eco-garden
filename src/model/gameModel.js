@@ -1,4 +1,5 @@
 const { generateContent } = require('../services/gemini');
+const supabase = require('../services/supabase');
 
 module.exports.generateQuestion = async () => {
     try {
@@ -21,4 +22,18 @@ module.exports.evaluateAnswer = async (answer, prompt) => {
         console.error('Error evaluating answer:', error);
         throw new Error('Error evaluating answer with Google Gemini');
     }
+};
+
+module.exports.updateUserScore = async (userId, score) => {
+    const { data, error } = await supabase
+        .from('users')
+        .update({ score })
+        .eq('id', userId);
+
+    if (error) {
+        console.error('Error updating user score:', error);
+        throw error;
+    }
+
+    return data;
 };

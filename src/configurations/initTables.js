@@ -25,10 +25,17 @@ bcrypt.hash("1234", saltRounds, (error, hash) => {
             user_id INT PRIMARY KEY AUTO_INCREMENT,
             username TEXT NOT NULL,
             email TEXT NOT NULL,
-            password TEXT NOT NULL,
-            created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            password TEXT NOT NULL
+            points INT 
+        );
+
+        CREATE TABLE Inventory (
+            user_id INT PRIMARY KEY AUTO_INCREMENT,
+            item_id INT,
+        );
+
+        CREATE TABLE Items (
+            item_id PRIMARY KEY AUTO_INCREMENT,
         );
 
         INSERT INTO User (username, email, password) VALUES

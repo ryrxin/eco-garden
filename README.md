@@ -8,12 +8,12 @@
 -   bcrypt
 -   jsonwebtoken
 -   @google/generative-ai
+-   @supabase/supabase-js
 -   nodemon
 
 ## Configuration
-
-`npm install express mysql2 dotenv bcrypt jsonwebtoken @google/generative-ai nodemon`
-`npm run init_tables`
+```npm install express mysql2 dotenv bcrypt jsonwebtoken @google/generative-ai @supabase/supabase-js nodemon```
+```npm run init_tables```
 
 ## .env (sample)
 
