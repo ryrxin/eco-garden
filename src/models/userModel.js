@@ -3,7 +3,7 @@ const db = require("../services/db");
 // GET /users
 module.exports.selectAll = (callback) => {
     const SQLSTATMENT = `
-    SELECT  * FROM user as u
+    SELECT user_id, username, email, password, IFNULL(points, 0) AS points FROM user
     `;
 
     db.query(SQLSTATMENT, callback);
@@ -64,7 +64,8 @@ module.exports.createNew = (data, callback) => {
 // GET /users/{user_id}
 module.exports.selectById = (data, callback) => {
     const SQLSTATMENT = `
-    SELECT * FROM user
+    SELECT user_id, username, email, password, IFNULL(points, 0) AS points FROM user
+    WHERE user_id = ?;
     `;
     const VALUES = [data.id];
 

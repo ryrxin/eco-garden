@@ -1,28 +1,33 @@
-const userId = localStorage.getItem("user_id");
+document.addEventListener("DOMContentLoaded", function () {
+    url = new URL(document.URL);
+    const urlParams = url.searchParams;
 
-const callbackForUserInfo = (responseStatus, responseData) => {
-  console.log("responseStatus:", responseStatus);
-  console.log("responseData:", responseData);
+    const callback = (responseStatus, responseData) => {
+        console.log("responseStatus:", responseStatus);
+        console.log("responseData:", responseData);
+        localStorage.setItem("user_id", responseData.user_id);
 
-  const userInfo = document.getElementById("userInfo");
+        const userInfo = document.getElementById("userInfo");
 
-  if (responseStatus == 404) {
-    userInfo.innerHTML = `${responseData.message}`;
-    return;
-  }
+        if (responseStatus == 404) {
+            userInfo.innerHTML = `${responseData.message}`;
+            return;
+        }
 
-  userInfo.innerHTML = `
-    <div class="card">
-    <div class="card-body">
-        <p class="card-text">
-            User_id: ${responseData.user_id} <br>
-            Username: ${responseData.username} <br>
-            Email: ${responseData.email} <br>
-            <br>Points: ${responseData.points} points<br>
-        </p>
-    </div>
-    </div>
-    `;
-};
+        userInfo.innerHTML = `
+          <div class="card">
+              <div class="card-body">
+                  <p class="card-text">
+                  Player ID: ${responseData.user_id} <br>
+                  Username: ${responseData.username} <br>
+                  Email: ${responseData.email} <br>
+                  Total Points: ${responseData.points} <br> 
+                  <a href="./editprofile.html" class="btn btn-primary mt-1">Edit profile</a>
+                  </p>
+              </div>
+          </div>
+      `;
+    };
 
-fetchMethod(currentUrl + `/api/users/${userId}`, callbackForUserInfo);
+    fetchMethod(currentUrl + `/api/users/profile`, callback, "GET", null, localStorage.getItem("token"));
+});
