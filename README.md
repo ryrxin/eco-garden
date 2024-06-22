@@ -3,7 +3,6 @@
 ## Dependencies
 
 -   express
--   mysql2
 -   dotenv
 -   bcrypt
 -   jsonwebtoken
@@ -12,20 +11,18 @@
 -   nodemon
 
 ## Configuration
-```npm install express mysql2 dotenv bcrypt jsonwebtoken @google/generative-ai @supabase/supabase-js nodemon```
+```npm install express dotenv bcrypt jsonwebtoken @google/generative-ai @supabase/supabase-js nodemon```
 ```npm run init_tables```
 
 ## .env (sample)
 
 ```
-DB_HOST=<your>
-DB_USER=<username>
-DB_PASSWORD=<password>
-DB_DATABASE=ecogarden
-
-JWT_SECRET_KEY=your-secret-key
+JWT_SECRET_KEY=<key>
 JWT_EXPIRES_IN=60m
 JWT_ALGORITHM=HS256
+
+SUPABASE_URL=https://fcyefjktsejdukbtcpxq.supabase.co
+SUPABASE_KEY=<key>
 
 GEMINI_API_KEY=<key>
 ```

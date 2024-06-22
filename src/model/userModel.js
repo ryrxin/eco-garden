@@ -1,129 +1,110 @@
-const pool = require('../services/db');
+const supabase = require('../services/supabase');
 
-// to select all users from the User table
-module.exports.selectAll = (callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT user_id, username, email, points
-    FROM User;
-    `;
-
-    pool.query(SQLSTATMENT, callback);
+// to select all users from the user table
+module.exports.selectAll = async () => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('user_id, username, email, points');
+    
+    if (error) throw error;
+    return data;
 }
 
-// to select a user by user_id from the User table
-module.exports.selectById = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT * FROM User
-    WHERE user_id = ?;
-    `;
-    const VALUES = [data.user_id];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to select a user by user_id from the user table
+module.exports.selectById = async (user_id) => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .eq('user_id', user_id)
+        .single();
+    
+    if (error) throw error;
+    return data;
 }
 
-// to check if an email is unique in the User table
-module.exports.uniqueEmail = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT * FROM User
-    WHERE email = ?;
-    `;
-    const VALUES = [data.email];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to check if an email is unique in the user table
+module.exports.uniqueEmail = async (email) => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .eq('email', email);
+    
+    if (error) throw error;
+    return data;
 }
 
-// to check if a username is unique in the User table
-module.exports.uniqueUsername = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT * FROM User
-    WHERE username = ?;
-    `;
-    const VALUES = [data.username];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to check if a username is unique in the user table
+module.exports.uniqueUsername = async (username) => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .eq('username', username);
+    
+    if (error) throw error;
+    return data;
 }
 
-// to insert a user into the User table
-module.exports.insertSingle = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    INSERT INTO User (username, email)
-    VALUES (?, ?);
-    `;
-    const VALUES = [data.username, data.email];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to insert a user into the user table
+module.exports.insertSingle = async (username, email) => {
+    const { data, error } = await supabase
+        .from('user')
+        .insert([{ username, email }]);
+    
+    if (error) throw error;
+    return data;
 }
 
-// to update a user by user_id in the User table
-module.exports.updateById = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    UPDATE User 
-    SET username = ?, email = ?
-    WHERE user_id = ?;
-   
-    `;
-    const VALUES = [data.username, data.email, data.user_id];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to update a user by user_id in the user table
+module.exports.updateById = async (user_id, username, email) => {
+    const { data, error } = await supabase
+        .from('user')
+        .update({ username, email })
+        .eq('user_id', user_id);
+    
+    if (error) throw error;
+    return data;
 }
 
-// to delete a user by user_id from the User table
-module.exports.deleteById = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    DELETE FROM User 
-    WHERE user_id = ?;
-
-    `;
-    const VALUES = [data.user_id];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// to delete a user by user_id from the user table
+module.exports.deleteById = async (user_id) => {
+    const { data, error } = await supabase
+        .from('user')
+        .delete()
+        .eq('user_id', user_id);
+    
+    if (error) throw error;
+    return data;
 }
 
-// Check username or email exist
-module.exports.checkUsernameOrEmailExist = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT * FROM User
-    WHERE email = ?;
-
-    SELECT * FROM User
-    WHERE username = ?;
-    `;
-    const VALUES = [data.email, data.username];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+// Check if username or email exists
+module.exports.checkUsernameOrEmailExist = async (email, username) => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .or(`email.eq.${email},username.eq.${username}`);
+    
+    if (error) throw error;
+    return data;
 }
 
 // Register
-module.exports.register = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    INSERT INTO User (username, email, password)
-    VALUES (?, ?, ?);
-
-    SELECT * FROM User
-    WHERE username = ?
-    `;
-    const VALUES = [data.username, data.email, data.hashPassword, data.username];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+module.exports.register = async (username, email, hashPassword) => {
+    const { data, error } = await supabase
+        .from('user')
+        .insert([{ username, email, password: hashPassword }]);
+    
+    if (error) throw error;
+    return data;
 }
 
 // Login
-module.exports.login = (data, callback) =>
-{
-    const SQLSTATMENT = `
-    SELECT * FROM User
-    WHERE username = ?;
-    `;
-    const VALUES = [data.username];
-
-    pool.query(SQLSTATMENT, VALUES, callback);
+module.exports.login = async (username) => {
+    const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .eq('username', username)
+        .single();
+    
+    if (error) throw error;
+    return data;
 }

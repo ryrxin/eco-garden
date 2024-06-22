@@ -1,179 +1,79 @@
-const model = require("../model/userModel.js");
+const model = require("../model/userModel");
 
-// to select all users from the User table
-module.exports.readAllUser = (req, res, next) =>
-{
-    const callback = (error, results, fields) => {
-        if (error) {
-            console.error("Error readAllUser:", error);
-            res.status(500).json(error);
-        } 
-        else res.status(200).json(results);
-    }
-
-    model.selectAll(callback);
-}
-
-// to select a user by user_id from the User table
-module.exports.readUserById = (req, res, next) =>
-{
-    const data = {
-        user_id: req.params.user_id
-    }
-
-    const callback = (error, results, fields) => {
-        if (error) {
-            console.error("Error readUserById:", error);
-            res.status(500).json(error);
-        } else {
-            if(results.length == 0)  // when the given user_id does not exist
-            {
-                res.status(404).json({
-                    message: "User not found"
-                });
-            }
-            else res.status(200).json(results[0]);
-        }
-    }
-
-    model.selectById(data, callback);
-}
-
-// a middleware: to check if an email is unique in the User table
-module.exports.uniqueEmail = (req, res, next) =>
-{
-    const data = {
-        email: req.body.email
-    }
-
-    const callback = (error, results, fields) => {
-        if (error){
-            res.status(500).json(error);
-        }else if (results.length > 0){  // when the email is not unique 
-            res.status(409).json({
-                message: "The provided email is already associated with another user"
-            })
-        }else{
-            next();
-        }
-    }
-
-    model.uniqueEmail(data,callback);
-}
-
-// to insert a user into the User table
-module.exports.createNewUser = (req, res, next) =>
-{
-    // when username and email is not given
-    if(req.body.username == undefined || req.body.email == undefined)
-    {
-        res.status(400).send("Error: username or email is undefined");
-        return;
-    }
-
-    const data = {
-        username: req.body.username,
-        email: req.body.email
-    }
-    
-    const callback = (error, results, fields) => {
-        if (error) {
-
-            res.status(500).json(error);
-
-        } else { 
-
-            res.status(201).json({
-                "user_id": results.insertId,
-                "username": data.username,
-                "email": data.email
-            });
-        }
-    }
-
-    model.insertSingle(data, callback);
-}
-
-
-
-
-// Check Username or Email Exist
-module.exports.checkUsernameOrEmailExist = (req, res, next) => {
-    const data = {
-      username: req.body.username,
-      email: req.body.email
-    }
-  
-    const callback = (error, results, fields) => {
-      if (error) {
+// to select all users from the user table
+module.exports.readAllUsers = async (req, res, next) => {
+    try {
+        const results = await model.selectAll();
+        res.status(200).json(results);
+    } catch (error) {
+        console.error("Error readAllUsers:", error);
         res.status(500).json(error);
-      } else if (results[0].length > 0 || results[1].length > 0){
-        console.log(results)
-        res.status(409).json({
-          message: "Username or email already exists"
-        })
-      } else {
-        next();
-      }
     }
-    model.checkUsernameOrEmailExist(data, callback);
 }
 
-// Register
-module.exports.register = (req,res,next)=>{
-    if (req.body.username == undefined || req.body.email == undefined || req.body.password == undefined) {
-      res.status(404).json({
-        message:"Missing required data"
-      })
+// to select a user by user_id from the user table
+module.exports.readUserById = async (req, res, next) => {
+    const user_id = req.params.user_id;
+
+    try {
+        const result = await model.selectById(user_id);
+        if (!result) {
+            res.status(404).json({ message: "User not found" });
+        } else {
+            res.status(200).json(result);
+        }
+    } catch (error) {
+        console.error("Error readUserById:", error);
+        res.status(500).json(error);
     }
-  
-    const data = {
-      username : req.body.username,
-      email : req.body.email,
-      hashPassword : res.locals.hash
-    }
-  
-    const callback = (error, results, fields) =>{
-      if(error){
-        res.status(500).json(error)
-      } else {
-        res.locals.id = results[1][0].user_id
-        res.locals.message = "User "+ results[1][0].username + " created successfully."
-        next();
-      }
-    }
-    model.register(data, callback)
 }
 
-// Login
-module.exports.login = (req, res, next) =>
-{
-  if(req.body.username == undefined || req.body.password == undefined) {
-    res.status(404).json({
-      message: "Missing required data"
-    })
-  }
+// Register a new user
+module.exports.register = async (req, res, next) => {
+    const { username, email, password } = req.body;
 
-  const data = {
-    username: req.body.username
-  }
-
-  const callback = (error, results, fields) => {
-    if (error) {
-      res.status(500).json(error);
-    } else if(results.length == 0) {
-       res.status(404).json({
-        message: "User not found"
-       })
-    } else {
-        res.locals.id = results[0].user_id
-        res.locals.username = results[0].username
-        res.locals.hash = results[0].password
-
-      next();
+    try {
+        const hashPassword = await bcrypt.hash(password, 10);
+        const result = await model.register(username, email, hashPassword);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json(error);
     }
-  }
-  model.login(data, callback);
 }
 
+// Login a user
+module.exports.login = async (req, res, next) => {
+    const { username, password } = req.body;
 
+    try {
+        const user = await model.login(username);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        res.status(200).json({ message: "Login successful" });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+// to delete a user by user_id from the user table
+module.exports.deleteUserById = async (req, res, next) => {
+    const user_id = req.params.user_id;
+
+    try {
+        const result = await model.deleteById(user_id);
+        if (!result) {
+            res.status(404).json({ message: "User not found" });
+        } else {
+            res.status(200).json({ message: "User deleted successfully" });
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}

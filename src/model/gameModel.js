@@ -3,7 +3,7 @@ const supabase = require('../services/supabase');
 
 module.exports.generateQuestion = async () => {
     try {
-        const prompt = "Generate a random question about sustainability.";
+        const prompt = "Generate a random simple question about sustainability.";
         const question = await generateContent(prompt);
         return question.trim();
     } catch (error) {
