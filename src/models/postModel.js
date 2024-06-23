@@ -12,7 +12,7 @@ module.exports.createNew = (data, callback) => {
 
 module.exports.selectAll = (callback) => {
     const SQLSTATMENT = `
-    SELECT * FROM posts AS p
+    SELECT u.user_id, username, text, created_on FROM posts AS p
     RIGHT JOIN user AS u
     ON p.user_id = u.user_id;
     `;
