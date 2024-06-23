@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const userController = require("../controllers/userController");
 const jwtMiddleware = require("../controllers/jwt");
 const bcryptMiddleware = require("../controllers/bcrypt");

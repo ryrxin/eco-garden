@@ -1,13 +1,11 @@
 const express = require("express");
-
 const router = express.Router();
 
-const controller = require("../controllers/postController");
-const jwtMiddleware = require("../controllers/jwt"); 
+const postController = require("../controllers/postController");
 
-router.get("/", controller.readAllPosts);
-router.post("/", controller.createNew);
-router.get("/:id", controller.readById);
-router.delete("/:id", controller.deleteById);
+router.get("/", postController.readAllPosts);
+router.post("/", postController.createNew);
+router.get("/:id", postController.readById);
+router.delete("/:id", postController.deleteById);
 
 module.exports = router;
