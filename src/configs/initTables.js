@@ -39,11 +39,11 @@ bcrypt.hash("1234", saltRounds, (error, hash) => {
         );
 
         INSERT INTO user (username, email, password, points) VALUES
-        ('admin', 'a@a.com', '${hash}');
+        ('admin', 'a@a.com', '${hash}', 0);
 
         INSERT INTO posts (post_id, user_id, text) VALUES
         (1, 1, 'Hello!'),
-        (2, 1, 'Recycle')
+        (2, 1, 'Recycle');
         `;
 
         pool.query(SQLSTATEMENT, callback);
