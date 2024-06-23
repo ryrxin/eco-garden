@@ -1,4 +1,5 @@
 # Eco Garden
+An AI powered minigame that focuses on sustainability.
 
 ## Dependencies
 
